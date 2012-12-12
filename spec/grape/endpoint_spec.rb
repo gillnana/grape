@@ -445,6 +445,19 @@ describe Grape::Endpoint do
       end
       get '/example'
     end
+
+    it 'should present multiple entities in the body' do
+      entity = Class.new(Grape::Entity)
+      entity.stub!(:represent).and_return({:foo => 'foo'})
+      other_entity = Class.new(Grape::Entity)
+      other_entity.stub!(:represent).and_return({:bar => 'bar'})
+      subject.get '/example' do
+        present Object.new, :with => entity
+        present Object.new, :with => other_entity
+        body.should == {:foo => 'foo', :bar => 'bar'}
+      end
+      get '/example'
+    end
   end
 
   context 'filters' do

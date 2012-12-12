@@ -328,7 +328,12 @@ module Grape
       end
 
       representation = { root => representation } if root
-      body representation
+
+      if body.respond_to?(:merge!) && representation.respond_to?(:to_hash)
+        body.merge! representation
+      else 
+        body representation
+      end
     end
 
     # Returns route information for the current request.
